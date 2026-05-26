@@ -1,0 +1,45 @@
+#Code were originally written in colab, I am transforming
+#into script.
+# %% Cell 1
+!pip install -q --upgrade torch
+!pip install -q transformers triton==3.4 kernels
+!pip uninstall -q torchvision torchaudio -y
+
+# %% Cell 3
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+
+model_id = "openai/gpt-oss-20b"
+
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+
+if torch.cuda.is_available():
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        torch_dtype="auto",
+        device_map="cuda",
+    )
+else:
+    print("CUDA is not available, loading model to CPU.")
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        torch_dtype="auto",
+    )
+
+# %% Cell 4
+messages = [
+    {"role": "system", "content": "Always respond in riddles"},
+    {"role": "user", "content": "What is the weather like in Madrid?"},
+]
+
+inputs = tokenizer.apply_chat_template(
+    messages,
+    add_generation_prompt=True,
+    return_tensors="pt",
+    return_dict=True,
+).to(model.device)
+
+generated = model.generate(**inputs, max_new_tokens=500)
+print(tokenizer.decode(generated[0][inputs["input_ids"].shape[-1]:]))
+
