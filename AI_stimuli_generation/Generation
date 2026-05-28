@@ -82,4 +82,20 @@ The scenario should include four parts:
 Use only information provided in the input. Do not invent traumatic details.
 Write in Polish.
 """
+# %% Cell 6
+import pandas as pd
+from datetime import datetime
+import os
+from google.colab import drive
+
+name = "Wydobycie+scenariuszy_8+lipca+2025_14.40 (1)"
+input_path = f"/content/drive/MyDrive/Bielik/Projekt_bielik/{name}.xlsx"
+drive.mount('/content/drive')
+
+# %% Cell 7
+import pandas as pd
+
+df = pd.read_excel(input_path).iloc[1:, :]
+
+
 
