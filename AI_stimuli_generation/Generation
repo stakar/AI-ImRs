@@ -1,13 +1,14 @@
 #Code were originally written in colab, I am transforming
 #into script.
-# %% Cell 1
-!pip install -q --upgrade torch
-!pip install -q transformers triton==3.4 kernels
-!pip uninstall -q torchvision torchaudio -y
 
-# %% Cell 3
+
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
+import pandas as pd
+from datetime import datetime
+import os
+from google.colab import drive
+
 
 model_id = "openai/gpt-oss-20b"
 
@@ -27,7 +28,6 @@ else:
         torch_dtype="auto",
     )
 
-# %% Cell 4
 messages = [
     {"role": "system", "content": "Always respond in riddles"},
     {"role": "user", "content": "What is the weather like in Madrid?"},
@@ -42,8 +42,6 @@ inputs = tokenizer.apply_chat_template(
 
 generated = model.generate(**inputs, max_new_tokens=500)
 print(tokenizer.decode(generated[0][inputs["input_ids"].shape[-1]:]))
-
-# %% Cell 5
 
 
 master prompt criticism = """
@@ -82,20 +80,9 @@ The scenario should include four parts:
 Use only information provided in the input. Do not invent traumatic details.
 Write in Polish.
 """
-# %% Cell 6
-import pandas as pd
-from datetime import datetime
-import os
-from google.colab import drive
 
 name = "Wydobycie+scenariuszy_8+lipca+2025_14.40 (1)"
 input_path = f"/content/drive/MyDrive/Bielik/Projekt_bielik/{name}.xlsx"
 drive.mount('/content/drive')
 
-# %% Cell 7
-import pandas as pd
-
 df = pd.read_excel(input_path).iloc[1:, :]
-
-
-
