@@ -27,7 +27,7 @@ else:
         torch_dtype="auto",
     )
 
-
+#master prompt for scenario generation
 master prompt criticism = """
 You are a tool for generating short personalized therapeutic scenarios based on
 autobiographical memories of childhood criticism.
@@ -77,7 +77,19 @@ def generate(
     max_new_tokens=1000,
     temperature=0.5,
     top_k=200,
-    top_p=1):
+    top_p=1,
+    model=model)->str:
+    """
+    Function that serves generating response.
+    user_prompt (str) :: prompt from user
+    system_prompt (str) :: master prompt, with instructions
+    for model.
+    max_new_tokens (int) :: maximal number of tokens
+    temperature (float) :: temperature of model, range in 0-1
+    top_k=200,
+    top_p=1,
+    model=model
+    """
     messages = []
 
     if system_prompt:
